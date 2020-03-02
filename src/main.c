@@ -13,7 +13,7 @@ struct Graph{
 
 struct ResultEdge{
   int nresult;
-  struct Edge* resultEdges;
+  struct Edge* edges;
 };
 
 struct Subtree{
@@ -21,12 +21,18 @@ struct Subtree{
 };
 
 struct Graph* newGraph(int numvert,int numedge){
-  //check on this because idk this properly mallocs the stuff
   struct Graph* graph = malloc(sizeof(struct Graph));
   graph->nvrt=numvert;
   graph->nedg=numedge;
   graph->edges=malloc(numedge*sizeof(struct Edge));
   return graph;
+}
+
+struct ResultEdge* newResultEdge(int numentry){
+  struct ResultEdge* result = malloc(sizeof(struct ResultEdge));
+  result->nresult=numentry;
+  result->edges=malloc(numentry*sizeof(struct Edge));
+  return result;
 }
 
 int getRoot(struct Subtree subtrees[], int n){
@@ -53,13 +59,12 @@ void merge(struct Subtree subtrees[], int a, int b){
   }
 }
 
-void doKruskal(struct Graph* graph){
-  //struct ResultEdge* result = malloc(sizeof(struct ResultEdge));
+struct ResultEdge* doKruskal(struct Graph* graph){
+
   struct Edge result[graph->nvrt];
   struct Edge temp;
   int tempEdge;
   int resultIter;
-
 
   //sort
   for(int i=1;i<graph->nedg;i++){
@@ -111,15 +116,22 @@ void doKruskal(struct Graph* graph){
     result[i].dst,
     result[i].wgt);
 
-    /*fprintf(output, "    %i: (%i, %i) %f\n",result[i].id,
+    /*fprintf(output, "    %i: (%i, %i) %i\n",result[i].id,
     result[i].src,
     result[i].dst,
     result[i].wgt);
     totalweight+=result[i].wgt;*/
   }
-  /*fprintf(output,"Total Weight = %f\n",totalweight);
-  printf("Total Weight = %f\n",totalweight);*/
-
+  //fprintf(output,"Total Weight = %i\n",totalweight);
+  printf("Total Weight = %i\n",totalweight);
+  struct ResultEdge* finaledge = newResultEdge(resultIter);
+  for(int i=0;i<resultIter;i++){
+    finaledge->edges[i].id=result[i].id;
+    finaledge->edges[i].src=result[i].src;
+    finaledge->edges[i].dst=result[i].dst;
+    finaledge->edges[i].wgt=result[i].wgt;
+  }
+  return finaledge;
 
 
   //result->nresult=resultIter;
@@ -133,9 +145,11 @@ int main(int argc, char *argv[]){
 
   FILE *fp;
   FILE *fp2;
+
   char buffer[255];
   fp = fopen(argv[1], "r");
   fp2 = fopen(argv[2], "w+");
+
 
   int numvert;
   int numedge;
@@ -181,12 +195,17 @@ int main(int argc, char *argv[]){
 
   printf("----\n");
 
-  doKruskal(graph);
+  struct ResultEdge* result = doKruskal(graph);
 
+  for(int i=0;i<result->nresult;i++){
+    printf("%i: %i, %i, %i\n",result->edges[i].id,
+    result->edges[i].src,
+    result->edges[i].dst,
+    result->edges[i].wgt);
+  }
 
 
   printf("done\n");
 
   fclose(fp);
-  fclose(fp2);
 }
