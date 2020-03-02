@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+//
 struct Edge{
   int src, dst, id;
   float wgt;
@@ -173,18 +174,18 @@ int main(int argc, char *argv[]){
   struct ResultEdge* result = doKruskal(graph);
   float totalweight=0.0;
   for(int i=0;i<result->nresult;i++){
-    fprintf(stdout, "    %i: (%i, %i) %.1f\n",result->edges[i].id,
+    /*fprintf(stdout, "    %i: (%i, %i) %.1f\n",result->edges[i].id,
     result->edges[i].src,
     result->edges[i].dst,
-    result->edges[i].wgt);
+    result->edges[i].wgt);*/
 
-    fprintf(fp2, "    %i: (%i, %i) %.1f\n",result->edges[i].id,
+    fprintf(fp2, "%4i: (%i, %i) %.1f\n",result->edges[i].id,
     result->edges[i].src,
     result->edges[i].dst,
     result->edges[i].wgt);
     totalweight+=result->edges[i].wgt;
   }
-  fprintf(stdout, "Total Weight = %.2f\n",totalweight);
+  //fprintf(stdout, "Total Weight = %.2f\n",totalweight);
   fprintf(fp2, "Total Weight = %.2f\n",totalweight);
 
   printf("done\n");
