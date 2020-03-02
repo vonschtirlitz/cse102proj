@@ -8,6 +8,7 @@
 //3/2/20
 //Finds the MWST of a graph from a file with Kruskals algorithim
 
+
 struct Edge{
   int src, dst, id;
   float wgt;
