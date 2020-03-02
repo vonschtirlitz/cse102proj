@@ -3,7 +3,7 @@
 #include <string.h>
 
 struct Edge{
-  int src, dst, wgt;
+  int src, dst, wgt, id;
 };
 
 struct Graph{
@@ -49,7 +49,37 @@ void merge(struct Subtree subtrees[], int a, int b){
 }
 
 void doKruskal(struct Graph* graph){
+  //struct Edge sorted[graph->nvrt];
   struct Edge result[graph->nvrt];
+
+  //sort
+  int i,j;
+	struct Edge temp;
+	for(i=1;i<graph->nedg;i++){
+		for(j=0;j<graph->nedg-1;j++){
+			if(graph->edges[j].wgt>graph->edges[j+1].wgt)
+			{
+				temp=graph->edges[j];
+				graph->edges[j]=graph->edges[j+1];
+				graph->edges[j+1]=temp;
+			}
+    }
+  }
+
+  //debug print graph
+  for(int i=0;i<graph->nedg;i++){
+    printf("%i: %i, %i, %i\n",
+    graph->edges[i].id,
+    graph->edges[i].src,
+    graph->edges[i].dst,
+    graph->edges[i].wgt);
+  }
+
+  struct Subtree *subtrees =
+  (struct Subtree*)malloc(graph->numvert*sizeof(struct Subtree));
+
+
+
 
 }
 
@@ -89,12 +119,18 @@ int main(int argc, char *argv[]){
     fscanf(fp, "%s", buffer);
     graph->edges[edgeindex].wgt=atoi(buffer);
 
+    graph->edges[edgeindex].id=edgeindex+1;
     edgeindex++;
   }
 
-  for(int i=0;i<numedge;i++){
-    printf("%i: %i, %i, %i\n",i,graph->edges[i].src,graph->edges[i].dst,graph->edges[i].wgt);
+  //debug input print
+  for(int i=0;i<graph->nedg;i++){
+    printf("%i: %i, %i, %i\n",graph->edges[i].id,graph->edges[i].src,graph->edges[i].dst,graph->edges[i].wgt);
   }
+
+  printf("----\n");
+
+  doKruskal(graph);
 
   fclose(fp);
 }
