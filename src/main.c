@@ -58,7 +58,43 @@ int main(int argc, char *argv[]){
   FILE *fp;
   char buffer[255];
   fp = fopen(argv[1], "r");
+
+  int numvert;
+  int numedge;
+  int edgeindex = 0;
+
   fscanf(fp, "%s", buffer);
-  printf("%s\n",buffer);
+  numvert=atoi(buffer);
+  //printf("%s,%i\n",buffer,numvert);
+
+  fscanf(fp, "%s", buffer);
+  numedge=atoi(buffer);
+  //printf("%s,%i\n",buffer,numedge);
+
+  struct Graph* graph = newGraph(numvert,numedge);
+
+
+
+  //debug
+  //printf("%i ",(int)sizeof(graph->edges));
+  //printf("%i\n",(int)sizeof(struct Edge));
+
+  while(fscanf(fp, "%s", buffer)!=EOF){
+
+    graph->edges[edgeindex].src=atoi(buffer);
+
+    fscanf(fp, "%s", buffer);
+    graph->edges[edgeindex].dst=atoi(buffer);
+
+    fscanf(fp, "%s", buffer);
+    graph->edges[edgeindex].wgt=atoi(buffer);
+
+    edgeindex++;
+  }
+
+  for(int i=0;i<numedge;i++){
+    printf("%i: %i, %i, %i\n",i,graph->edges[i].src,graph->edges[i].dst,graph->edges[i].wgt);
+  }
+
   fclose(fp);
 }
