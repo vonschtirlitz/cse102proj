@@ -11,6 +11,11 @@ struct Graph{
   struct Edge* edges;
 };
 
+struct ResultEdge{
+  int nresult;
+  struct Edge* resultEdges;
+};
+
 struct Subtree{
   int root,rank;
 };
@@ -49,20 +54,22 @@ void merge(struct Subtree subtrees[], int a, int b){
 }
 
 void doKruskal(struct Graph* graph){
-  //struct Edge sorted[graph->nvrt];
+  //struct ResultEdge* result = malloc(sizeof(struct ResultEdge));
   struct Edge result[graph->nvrt];
+  struct Edge temp;
+  int tempEdge;
+  int resultIter;
+
 
   //sort
-  int i,j;
-	struct Edge temp;
-	for(i=1;i<graph->nedg;i++){
-		for(j=0;j<graph->nedg-1;j++){
-			if(graph->edges[j].wgt>graph->edges[j+1].wgt)
-			{
-				temp=graph->edges[j];
-				graph->edges[j]=graph->edges[j+1];
-				graph->edges[j+1]=temp;
-			}
+  for(int i=1;i<graph->nedg;i++){
+    for(int j=0;j<graph->nedg-1;j++){
+      if(graph->edges[j].wgt>graph->edges[j+1].wgt)
+      {
+        temp=graph->edges[j];
+        graph->edges[j]=graph->edges[j+1];
+        graph->edges[j+1]=temp;
+      }
     }
   }
 
@@ -75,10 +82,49 @@ void doKruskal(struct Graph* graph){
     graph->edges[i].wgt);
   }
 
+  //initialize subtrees
   struct Subtree *subtrees =
-  (struct Subtree*)malloc(graph->numvert*sizeof(struct Subtree));
+  (struct Subtree*)malloc(graph->nvrt*sizeof(struct Subtree));
+  for(int i=0;i<graph->nvrt;i++){
+    subtrees[i].root = i;
+    subtrees[i].rank = 0;
+  }
+
+  while (resultIter < graph->nvrt-1 && tempEdge < graph->nedg){
+    struct Edge next_edge = graph->edges[tempEdge++];
+
+    int x = getRoot(subtrees, next_edge.src);
+    int y = getRoot(subtrees, next_edge.dst);
+    if (x != y)
+    {
+      result[resultIter++] = next_edge;
+      merge(subtrees, x, y);
+    }
+    // Else discard the next_edge
+  }
+  printf("----\n");
+  int totalweight;
+  for(int i=0;i<resultIter;i++){
+    printf("%i: %i, %i, %i\n",
+    result[i].id,
+    result[i].src,
+    result[i].dst,
+    result[i].wgt);
+
+    /*fprintf(output, "    %i: (%i, %i) %f\n",result[i].id,
+    result[i].src,
+    result[i].dst,
+    result[i].wgt);
+    totalweight+=result[i].wgt;*/
+  }
+  /*fprintf(output,"Total Weight = %f\n",totalweight);
+  printf("Total Weight = %f\n",totalweight);*/
 
 
+
+  //result->nresult=resultIter;
+  //result->resultEdges=resultEdge;
+  //return result;
 
 
 }
@@ -86,8 +132,10 @@ void doKruskal(struct Graph* graph){
 int main(int argc, char *argv[]){
 
   FILE *fp;
+  FILE *fp2;
   char buffer[255];
   fp = fopen(argv[1], "r");
+  fp2 = fopen(argv[2], "w+");
 
   int numvert;
   int numedge;
@@ -125,12 +173,20 @@ int main(int argc, char *argv[]){
 
   //debug input print
   for(int i=0;i<graph->nedg;i++){
-    printf("%i: %i, %i, %i\n",graph->edges[i].id,graph->edges[i].src,graph->edges[i].dst,graph->edges[i].wgt);
+    printf("%i: %i, %i, %i\n",graph->edges[i].id,
+    graph->edges[i].src,
+    graph->edges[i].dst,
+    graph->edges[i].wgt);
   }
 
   printf("----\n");
 
   doKruskal(graph);
 
+
+
+  printf("done\n");
+
   fclose(fp);
+  fclose(fp2);
 }
