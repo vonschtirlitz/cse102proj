@@ -2,7 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-//
+//Nikita Usenko
+//CSE102
+//Programming Project
+//3/2/20
+//Finds the MWST of a graph from a file with Kruskals algorithim
+
 struct Edge{
   int src, dst, id;
   float wgt;
@@ -114,13 +119,6 @@ struct ResultEdge* doKruskal(struct Graph* graph){
     finaledge->edges[i].wgt=result[i].wgt;
   }
   return finaledge;
-
-
-  //result->nresult=resultN;
-  //result->resultEdges=resultEdge;
-  //return result;
-
-
 }
 
 int main(int argc, char *argv[]){
@@ -188,9 +186,10 @@ int main(int argc, char *argv[]){
   //fprintf(stdout, "Total Weight = %.2f\n",totalweight);
   fprintf(fp2, "Total Weight = %.2f\n",totalweight);
 
-  printf("done\n");
+  //printf("done\n");
 
   fclose(fp);
   fclose(fp2);
-
+  free(result);
+  free(graph);
 }
